@@ -163,7 +163,27 @@ let listaLivros = ref([
         </ul>
       </section>
     </main>
-
+    <footer>
+        <div>
+     <h3>Saiba mais sobre nós:</h3>
+      <ul>
+        <li class="footerborda">
+          <a href="App.vue"><span class="fa-brands fa-instagram"></span></a>
+        </li>
+        <li>
+          <a href="App.vue"><span class="fa-brands fa-youtube"></span></a>
+        </li>
+      </ul>
+    </div>
+    <div>
+     <h3>Tire dúvidas aqui:</h3>
+     <input type="text">
+    </div>
+    <div>
+      <p>Desenvolvido por: Maria Aparecida dos Santos Costa</p>
+      <p>Alguns direitos reservados &copy; 2025</p>
+    </div>
+    </footer>
     </body>
     </div>
   <div v-else>
@@ -506,5 +526,45 @@ img {
   border: 2px solid #FF5722;
   border-radius: 5px;
   margin: 10px;
+}
+footer {
+  margin: 2vw 2vw 3vw 8vw;
+  display: flex;
+  justify-content: space-between;
+  background-color: #f1cf66;
+  margin: 0;
+  padding: 3vw;
+  border-top: #FF5722 solid 2px;
+}
+footer p {
+  line-height: 140%;
+}
+footer h3 {
+  font-size: 1.3rem;
+  margin: 0 0 0 14px;
+}
+footer a {
+  color: #FF5722;
+  font-size: 1.4rem;
+}
+footer input {
+  padding: 0.4vw 0 0.4vw 1vw;
+  font-size: 0.9rem;
+  background-color: #F1f1f1;
+  border: #FF5722 solid 2px;
+  margin-right: 2vw;
+  border-radius: 3px;
+  margin: 1.5vw 0 0 0;
+  border-radius: 12px;
+}
+footer ul {
+  display: flex;
+}
+footer ul li {
+  margin: 12px 0 0 45px;
+}
+footer ul li.footerborda {
+  border-right: #FF5722 solid 2px;
+  padding: 0 3vw 0 0;
 }
 </style>
