@@ -1,6 +1,11 @@
 <script setup>
 
- import { ref } from "vue";
+ import { computed, ref } from "vue";
+
+ import HeaderComponent from '@/components/HeaderComponent.vue'
+ import BannerComponent from '@/components/BannerComponent.vue'
+ import CategoriasComponent from '@/components/CategoriasComponent.vue'
+ import LojaComponent from '@/components/LojaComponent.vue'
 
 let listaLivros = ref([
     {id: 1, nome: 'O livro de receitas dos Animes', autor: 'Nadine Estero', preco: 'R$119,90', sinapse: ' Este livro traz 75 receitas inspiradas nos pratos mais icônicos de diversos animes, como One Piece, My Hero Academia, Food Wars! e Dragon Ball Z. Cada receita é acompanhada de uma ilustração no estilo anime, além de informações sobre o episódio em que o prato aparece. Ideal para fãs de culinária e cultura japonesa.', capa: '/images/anime.webp' },
@@ -18,12 +23,13 @@ let listaLivros = ref([
   ]);
 
 
-    function sorteando() {
+  function sorteando() {
     const sorteio = Math.floor(Math.random() * listaLivros.value.length);
     return listaLivros.value[sorteio];
   }
 
-  let livroSelecionado = ref(sorteando());
+  const livroSelecionado = computed(sorteando);
+  // const livroSelecionado = computed(() => listaLivros.value[Math.floor(Math.random() * listaLivros.value.length)]);
 
    let carrinho = ref([]);
   function adicionarCarrinho(livro) {
@@ -73,95 +79,17 @@ let listaLivros = ref([
 <template>
     <div v-if="!carrinhoVisivel">
     <body>
-         <header>
-      <ul class="principal">
-        <ul class="logo">
-        <li>
-          <a href="index.html">IFbooks</a>
-        </li>
-        <li class="p">Apreço a <br> leitura</li>
-      </ul>
-      <ul class="input-wrapper">
-        <li>
-          <input type="text" placeholder="Pesquisar">
-          <span id="icone" class="fa-solid fa-magnifying-glass"></span>
-        </li>
-      </ul>
-      <ul class="itens">
-        <li>
-          <a href="#">Termos</a>
-        </li>
-        <li>
-          <a href="#">Equipe</a>
-        </li>
-        <li>
-          <a href="#">Envio</a>
-        </li>
-        <li>
-          <a href="#">Devoluções</a>
-        </li>
-       </ul>
-        <ul class="icones">
-        <li>
-           <span @click="mostrarCarrinho" class="fa-solid fa-cart-shopping"></span>
-          </li>
-        <li>
-          <span id="borda" class="fa-solid fa-heart"></span>
-        </li>
-        <li>
-          <span class="fa-solid fa-user"></span>
-        </li>
-      </ul>
-      </ul>
-    </header>
+         <HeaderComponent @click-carrinho="mostrarCarrinho = !mostrarCarrinho" />
     <main>
-       <section class="exibicao">
-      <div class="central">
-        <div class="texto">
-          <p class="abril">Livro de Abril</p>
-          <h1 class="nome">{{ livroSelecionado.nome }}</h1>
-          <p class="autor">{{ livroSelecionado.autor }}</p>
-          <p class="sinapse">{{ livroSelecionado.sinapse }}</p>
-        </div>
-        <div><img class="banner" :src="livroSelecionado.capa" alt="foto"></div>
-      </div>
-      </section>
-       <section class="categorias">
-        <ul>
-          <li class="border">
-            <span id="truck" class="fa-solid fa-truck-fast"></span>
-            <p>Frete Grátis para o litoral</p>
-          </li>
-          <li>
-            <span id="star" class="fa-solid fa-star"></span>
-            <p>Mais vendidos</p>
-          </li>
-          <li class="borderb">
-            <span id="livros" class="fa-solid fa-book-open"></span>
-            <p>Livros recomendados</p>
-          </li>
-        </ul>
-      </section>
-      <section  v-if="lojaVisivel" class="loja">
-         <h2>Livros Disponíveis:</h2>
-        <ul>
-          <li v-for="livro in listaLivros" :key="livro.id">
-            <img :src="livro.capa" alt="capa">
-            <h3>{{ livro.nome }}</h3>
-            <p>{{ livro.autor }}
-              <span class="fa-regular fa-heart"></span>
-            </p>
-            <p>{{ livro.preco }}</p>
-            <button
-          v-if="!livro.adicionado"
-          @click="adicionarCarrinho(livro)"
-        >
-          <span class="fa-solid fa-cart-shopping"></span>
-        </button>
-        <button v-else>Adicionado</button>
-          </li>
-        </ul>
-      </section>
+      <BannerComponent :livroSelecionado="livroSelecionado" />
+      <CategoriasComponent />
+      <main v-if="lojaVisivel">
+
+        <LojaComponent @adicionarCarrinho="adicionarCarrinho"
+        :listaLivros="listaLivros" />
+        
+      </main>
+      
     </main>
     <footer>
         <div>
@@ -186,7 +114,7 @@ let listaLivros = ref([
     </footer>
     </body>
     </div>
-  <div v-else>
+  <main v-else>
     <section class="carrinho" v-if="carrinho.length > 0">
       <h2>Seu Carrinho</h2>
       <div class="divcarrinho">
@@ -238,189 +166,11 @@ let listaLivros = ref([
       <p>Clique aqui para adicionar itens:</p>
       <button @click="mostrarLoja">Loja</button>
     </section>
-    </div>
+  </main>
 </template>
 
 <style scoped>
-header {
-  margin: 0 0 5vw 0 ;
-  background-color: #f1cf66;
-  margin: 0 0 2vw 0;
-  padding: 2vw 2vw 5vw 2vw;
-  border-bottom: 2px solid #FF5722;
-}
-header ul.principal{
-  display: flex;
-  margin: 1.5vw 0 0 0;
-}
-header a {
-  color:  black ;
-}
-header a:hover{
-  color: #FF69B4;
-}
-header ul.logo {
-  margin: 1.8vw 1vw 0 5vw;
-  display: flex;
-  color: #FF5722;
-}
 
-ul.logo li.p {
-  font-size: 0.8rem;
-  margin: 0 0 0 8px;
-  border-left:2px solid #FF5722;
-  padding: 0 0 0 7px;
-}
-ul.input-wrapper{
-  margin: 1.5vw 0 0 5vw;
-}
-header ul li input {
-  padding: 0.4vw 10vw 0.4vw 1vw;
-  font-size: 0.9rem;
-  background-color: #F1f1f1;
-  border: solid 2px #FF5722;
-  position: relative;
-  margin-right: 2vw;
-  border-radius: 5px;
-}
-header #icone {
-  position: absolute;
-  margin-left: 2vw;
-  bottom: 45.9vw;
-  left: 37.7vw;
-  color: rgb(165, 163, 163);
-}
-header ul.itens{
-  display: flex;
-  margin: 1.8vw 0 0 2vw;
-}
-header ul.itens li {
-  margin: 0 3vw;
-}
-header ul.icones {
-  margin: 1.8vw 0 0 0;
-  display: flex;
-  color: black;
-}
-header ul.icones li span {
-  margin: 0 0 0 2vw;
-}
-header ul.icones #borda {
-  border-left: 2px solid  #FF5722;
-  border-right: 2px solid #FF5722;
-  padding: 0 1.8vw 0 1.8vw;
-}
-.exibicao div.central {
-  display: flex;
-  padding: 8vw;
-  margin: 2vw 0 0 8vw;
-}
-.exibicao div.texto {
-  margin: 3vw 10vw 0 0;
-}
-img {
-  width: 300px;
-  height: 400px;
-}
-.exibicao {
-  border-bottom: 2px solid #FF5722;
-}
-.exibicao div.texto p.abril {
-  margin: 0 0 2vw 0;
-  font-size: 1vw;
-  border: 2px solid #FF5722;
-  padding: 0.7vw;
-  font-weight: 600;
-  width: 70px;
-  text-align: center;
-  line-height: 120%;
-  border-radius: 45px;
-}
-.exibicao div.texto h1.nome{
-  font-family: "Patua One", serif;
-  font-size: 2.5rem;
-}
-.exibicao div.texto p.autor {
-  font-size: 1.3rem;
-  margin: 30px 0 30px 0;
-}
-.exibicao div.texto p.sinapse {
-  font-size: 1.2rem;
-}
-.categorias {
-  margin: 4vw 0 0 0;
-  border-bottom: 2px solid #FF5722;
-  padding: 0 0 5vw 0;
-}
-.categorias ul {
-  display: flex;
-}
-.categorias ul li {
-  margin: 2vw 8vw 2vw 5vw;
-}
-.categorias ul span#star {
-  margin: 0 10px 8px 52px;
-}
-.categorias ul span#truck {
-  margin: 0 10px 8px 106px;
-}
-.categorias ul span#livros {
-  margin: 0 10px 8px 83px;
-}
-.categorias ul span {
-  font-size: 2rem;
-  color: #FF5722;
-}
-.categorias ul li p {
-  font-size: 1.3rem;
-  width: 130%;
-  font-weight: 700;
-}
-.categorias ul li.border {
-  border-right: #FF5722 solid 3px;
-  padding: 0 7vw;
-}
-.categorias ul li.borderb {
-  border-left: #FF5722 solid 3px;
-  padding: 0 7vw;
-}
-.loja ul {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 3vw 0 7.5vw ;
-  justify-content: center;
-  padding: 0;
-}
-.loja ul li {
-  margin: 6vw 1.5vw 3vw 1.5vw;
-  width: 320px;
-  margin: 2vw;
-}
-.loja h3 {
-  font-family: "Patua One", serif;
-  margin: 20px 0 0 0 ;
-  font-size: 1rem;
-}
-.loja p {
-  font-size: 1.1rem;
-  margin: 10px 0 10px 0;
-}
-.loja button {
-  font-size: 1.2rem;
-  padding: 10px 100px 10px 100px;
-  color: #FF5722;
-  background-color: white;
-  border: 2px solid #FF5722;
-  margin: 10px 0 0 0;
-  margin: 1vw 0 0 3px;
-}
-.loja h2 {
-  font-size: 1.8rem;
-  margin: 5vw 6vw 3vw 6vw;
-  border-bottom: 2px solid #FF5722;
-  width: 14%;
-  padding: 0 0 10px 0;
-}
 .carrinho div.divcarrinho {
   display: flex;
 }
